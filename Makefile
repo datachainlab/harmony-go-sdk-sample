@@ -45,7 +45,7 @@ test:
 .PHONY: run
 run:
 	. $(shell go env GOPATH)/src/github.com/harmony-one/harmony/scripts/setup_bls_build_flags.sh -v && \
-	go run --ldflags='${ldflags}' main.go
+	go run main.go
 #	. $(shell go env GOPATH)/src/github.com/harmony-one/harmony/scripts/setup_bls_build_flags.sh -v && \
 	./go-sdk-sample
 
