@@ -17,7 +17,6 @@ import (
 	"github.com/harmony-one/harmony/accounts/abi"
 	"github.com/harmony-one/harmony/accounts/keystore"
 	"github.com/harmony-one/harmony/numeric"
-	"github.com/hyperledger-labs/yui-ibc-solidity/pkg/contract/ibchandler"
 )
 
 const chainId = 2
@@ -26,13 +25,21 @@ type Chain struct {
 	config        ChainConfig
 	client        *Client
 	ethclient     *ethclient.Client
-	ibcHandler    *ibchandler.Ibchandler
 	ibcHandlerABI *abi.ABI
 	keyStore      *keystore.KeyStore
 }
 
 type Client struct {
 	messenger *sdkrpc.HTTPMessenger
+}
+
+// from yui-ibc-solidity
+// IBCMsgsMsgCreateClient is an auto generated low-level Go binding around an user-defined struct.
+type IBCMsgsMsgCreateClient struct {
+	ClientType          string
+	Height              uint64
+	ClientStateBytes    []byte
+	ConsensusStateBytes []byte
 }
 
 func NewHarmonyClient(endpoint string) *Client {
@@ -49,11 +56,7 @@ func NewChain(chainConfig ChainConfig) (*Chain, error) {
 		return nil, err
 	}
 
-	ih, err := ibchandler.NewIbchandler(chainConfig.IbcHandlerAddress, ethclient)
-	if err != nil {
-		return nil, err
-	}
-	ihABI, err := abi.JSON(strings.NewReader(ibchandler.IbchandlerABI))
+	ihABI, err := abi.JSON(strings.NewReader(chainConfig.IbcHandlerABI))
 	if err != nil {
 		return nil, err
 	}
@@ -70,21 +73,23 @@ func NewChain(chainConfig ChainConfig) (*Chain, error) {
 		config:        chainConfig,
 		client:        client,
 		ethclient:     ethclient,
-		ibcHandler:    ih,
 		ibcHandlerABI: &ihABI,
 		keyStore:      keyStore,
 	}, nil
 }
 
 func (c *Chain) GetHostAddress() (common.Address, error) {
-	res, err := c.ibcHandler.GetHostAddress(nil)
+	res, err := c.Call("getHostAddress")
 	if err != nil {
 		return common.Address{}, err
 	}
-	return res, nil
+	s, ok := res.(string)
+	if !ok {
+		return common.Address{}, errors.New("invalid result")
+	}
+	return common.HexToAddress(s), nil
 }
 
-// unused
 func (c *Chain) Call(method string, params ...interface{}) (interface{}, error) {
 	input, err := c.ibcHandlerABI.Pack(method, params...)
 	if err != nil {

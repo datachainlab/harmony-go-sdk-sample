@@ -13,6 +13,7 @@ type ChainConfig struct {
 	ChainID           sdkcommon.ChainID
 	ShardID           uint32
 	IbcHandlerAddress common.Address
+	IbcHandlerABI     string
 	GasLimit          uint64
 	GasPrice          numeric.Dec
 	PrivKey           *ecdsa.PrivateKey
