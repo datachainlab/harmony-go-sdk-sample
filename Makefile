@@ -10,9 +10,9 @@ harmony_root=${gopath}/src/github.com/harmony-one
 
 ## workaround for link error
 #ifeq ($(shell uname),Linux)
-#	ldflags=-extldflags "-Wl,--allow-multiple-definition"
+#	ldflags=-v -extldflags "-Wl,--allow-multiple-definition"
 #else
-	ldflags=-v -extldflags "-Wl, -v"
+	ldflags=-v
 #endif
 
 .PHONY: setup-harmony
@@ -35,7 +35,7 @@ build-harmony:
 .PHONY: build
 build:
 	. $(shell go env GOPATH)/src/github.com/harmony-one/harmony/scripts/setup_bls_build_flags.sh -v && \
-	go build --ldflags='${ldflags}' -v
+	go build -ldflags='${ldflags}' -v
 
 .PHONY: test
 test:
@@ -48,5 +48,3 @@ run:
 	go run main.go
 #	. $(shell go env GOPATH)/src/github.com/harmony-one/harmony/scripts/setup_bls_build_flags.sh -v && \
 	./go-sdk-sample
-
-
