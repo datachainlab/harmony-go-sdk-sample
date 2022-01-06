@@ -1,4 +1,4 @@
-module github.com/datachainlab/go-sdk-sample
+module github.com/datachainlab/harmony-go-sdk-sample
 
 go 1.16
 

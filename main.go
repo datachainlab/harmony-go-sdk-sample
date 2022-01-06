@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/datachainlab/go-sdk-sample/pkg"
+	"github.com/datachainlab/harmony-go-sdk-sample/pkg"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	sdkcommon "github.com/harmony-one/go-sdk/pkg/common"
